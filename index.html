@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chess Coordinate Trainer - Custom Scope</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2c3e50">
+    <link rel="apple-touch-icon" href="icon-192.png">
     <style>
         :root {
             --light-sq: #f0d9b5;
@@ -174,6 +177,21 @@
             cursor: grabbing;
             transform: scale(1.1);
         }
+        .attribution {
+        margin-top: 2rem;
+        font-size: 0.8rem;
+        color: #bdc3c7;
+        text-align: center;
+        }
+
+        .attribution a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .attribution a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -219,7 +237,9 @@
             </div>
         </div>
     </div>
-
+    <div class="attribution">
+        Horse Icon by Deni Sudibyo from <a href="https://thenounproject.com/browse/icons/term/horse/" target="_blank" title="Horse Icons">Noun Project</a> (CC BY 3.0)
+    </div>
     <script>
         const boardEl = document.getElementById('board');
         const targetEl = document.getElementById('target');
@@ -368,5 +388,18 @@
         updateScope();
         renderBoard();
     </script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js')
+        .then(registration => {
+          console.log('ServiceWorker registration successful with scope: ', registration.scope);
+        })
+        .catch(err => {
+          console.log('ServiceWorker registration failed: ', err);
+        });
+    });
+  }
+</script>
 </body>
 </html>
