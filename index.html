@@ -9,6 +9,11 @@
     <meta name="theme-color" content="#2c3e50">
     <link rel="apple-touch-icon" href="icon-192.png">
     
+    <!-- Corrected Google Fonts Link -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    
     <style>
         :root {
             --light-sq: #f0d9b5;
@@ -21,7 +26,7 @@
         }
         
         body {
-            font-family: system-ui, -apple-system, sans-serif;
+            font-family: 'Open Sans', Helvetica, Arial, sans-serif;
             background-color: var(--bg);
             color: var(--text);
             display: flex;
@@ -64,10 +69,11 @@
             align-items: baseline; /* Align targets by text bottom */
             z-index: 10;
             pointer-events: none; /* Let clicks pass through to squares */
-            font-family: serif; /* Serif font makes coords very distinct */
+            font-family: 'Open Sans', Helvetica, Arial, sans-serif;
             font-weight: bold;
             text-transform: lowercase;
             color: var(--text);
+            text-shadow: 0 6px 16px rgba(0, 0, 0, 0.8);
             opacity: 0; /* Hidden initially */
             transition: opacity 0.3s ease;
         }
@@ -78,12 +84,13 @@
         #target-current {
             font-size: clamp(6rem, 20vw, 12rem); /* Dynamic huge sizing */
             line-height: 1;
-            opacity: 0.15; /* Low opacity, eyes see through to board */
+            opacity: 0.8; /* Low opacity, eyes see through to board */
+            text-align: center;
         }
 
         #target-next {
             font-size: clamp(1.5rem, 5vw, 3rem); /* Smaller upcoming target */
-            opacity: 0.3; /* Slightly higher relative opacity */
+            opacity: 0.8; /* Slightly higher relative opacity */
             margin-left: 1rem;
             color: var(--accent);
         }
@@ -233,6 +240,23 @@
             transform: scale(1.1);
         }
 
+        .theme-select {
+            width: 100%;
+            padding: 0.5rem;
+            border-radius: 4px;
+            background-color: #1a252f;
+            color: var(--text);
+            border: 1px solid #2c3e50;
+            font-family: inherit;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
+        
+        .theme-select:focus {
+            outline: 2px solid var(--accent);
+        }
+
         .attribution {
             margin-top: 3rem;
             font-size: 0.8rem;
@@ -273,7 +297,7 @@
         <button id="flipBtn">Playing as: White</button>
     </div>
 
-    <div class="settings">
+    <div class="settings" style="margin-bottom: 1.5rem;">
         <h3 class="settings-title">Target Scope</h3>
         
         <div class="slider-group">
@@ -298,6 +322,22 @@
                 <input type="range" id="rankMin" min="0" max="7" value="0">
                 <input type="range" id="rankMax" min="0" max="7" value="7">
             </div>
+        </div>
+    </div>
+
+    <div class="settings">
+        <h3 class="settings-title">Settings</h3>
+        
+        <div class="slider-group">
+            <div class="slider-label">
+                <span>Board Theme</span>
+            </div>
+            <select id="themeSelect" class="theme-select">
+                <option value="wood">Wood (Default)</option>
+                <option value="green">Classic Green</option>
+                <option value="blue">Ocean Blue</option>
+                <option value="grey">Monochrome</option>
+            </select>
         </div>
     </div>
 
@@ -327,6 +367,7 @@
         const rankMaxSlider = document.getElementById('rankMax');
         const fileDisplay = document.getElementById('fileDisplay');
         const rankDisplay = document.getElementById('rankDisplay');
+        const themeSelect = document.getElementById('themeSelect');
 
         const allFiles = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
         const allRanks = ['1', '2', '3', '4', '5', '6', '7', '8'];
@@ -367,6 +408,20 @@
             activeFiles = allFiles.slice(fStart, fEnd + 1);
             activeRanks = allRanks.slice(rStart, rEnd + 1);
         }
+
+        // --- Theme Logic ---
+        const themes = {
+            wood: { light: '#f0d9b5', dark: '#b58863' },
+            green: { light: '#eeeed2', dark: '#769656' }, // Popular Lichess/Chess.com green
+            blue: { light: '#dee3e6', dark: '#8ca2ad' },
+            grey: { light: '#c8c8c8', dark: '#818181' }
+        };
+
+        themeSelect.addEventListener('change', (e) => {
+            const theme = themes[e.target.value];
+            document.documentElement.style.setProperty('--light-sq', theme.light);
+            document.documentElement.style.setProperty('--dark-sq', theme.dark);
+        });
 
         // Attach listeners to all 4 inputs
         [fileMinSlider, fileMaxSlider, rankMinSlider, rankMaxSlider].forEach(slider => {
